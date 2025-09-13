@@ -1,5 +1,5 @@
 import { Client } from "whatsapp-web.js";
-import { handleGuessCommand, handleStartCommand, handleStopCommand, handleSurrenderCommand } from "./game/manager.js";
+import { handleChatTemination as handleChatTermination, handleGuessCommand, handleStartCommand, handleStopCommand, handleSurrenderCommand } from "./game/manager.js";
 import qrcode from "qrcode-terminal";
 import { guideText } from "./game/textUtils.js";
 
@@ -37,7 +37,7 @@ client.on("message_create", async message => {
         case "!guess":
             handleGuessCommand(message, args[0]);
             break;
-        case "!surrender": 
+        case "!surrender":
             handleSurrenderCommand(message);
             break;
         case "!stop":
@@ -46,6 +46,9 @@ client.on("message_create", async message => {
         case "!guide":
         case "!help":
             message.reply(guideText);
+            break;
+        case "!terminate": 
+            await handleChatTermination(message);
             break;
         default:
             message.reply("פקודה לא מוכרת. נסה !play, !guess, !stop, !surrender, !guide או !help.");

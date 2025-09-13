@@ -43,3 +43,29 @@ export async function handleSurrenderCommand(message: Message) {
     HangManManager.stopGame(chatId);
 }
 
+/**
+ * Only can be used by the bot owner to clean up the chat.
+ * Deletes all messages sent by the bot in the last 100 messages.
+ */
+export async function handleChatTemination(message: Message) {
+    await message.reply("מנתק את הבוט... 👋");
+    const chat = await message.getChat();
+
+    console.log("Terminating bot and cleaning up bot messages...");
+    const messages = await chat.fetchMessages({ limit: 100 });
+    console.log("Fetched messages:", messages.length);
+
+    for (const msg of messages) {
+        if (msg.fromMe) {
+            try {
+                console.log("Deleting bot msg:", msg.id._serialized, "|", msg.body);
+                await msg.delete(true);
+            } catch (error) {
+                console.error("❌ Failed to delete:", msg.id._serialized, error);
+            }
+        } else {
+            console.log("Skipping non-bot msg:", msg.id._serialized);
+        }
+    }
+}
+
